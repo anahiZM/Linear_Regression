@@ -1,0 +1,107 @@
+<html>
+
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+<title>Title</title>
+</head>
+
+<body>
+
+<b>The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries.</b>
+
+<p> 
+First, we will study the dependence of fertility on ppgdp with a scatterplot
+</p>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(alr4)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Loading required package: car
+</pre></div>
+<div class="message"><pre class="knitr r">## Loading required package: carData
+</pre></div>
+<div class="message"><pre class="knitr r">## Loading required package: effects
+</pre></div>
+<div class="message"><pre class="knitr r">## lattice theme set by effectsTheme()
+## See ?effectsTheme for details.
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(fertility</span> <span class="hl opt">~</span> <span class="hl std">ppgdp, UN11,</span> <span class="hl kwc">main</span> <span class="hl std">=</span> <span class="hl str">&quot;fertility on ppgdp&quot;</span><span class="hl std">)</span>
+<span class="hl std">m0</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">lm</span><span class="hl std">(fertility</span> <span class="hl opt">~</span> <span class="hl std">ppgdp,</span> <span class="hl kwc">data</span><span class="hl std">=UN11)</span>
+            <span class="hl kwd">abline</span><span class="hl std">(m0)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" class="plot" /></div></div>
+
+<p> As we can see, the model doesn't fit very well, so we will draw the scatterplot of  <b>log(fertility)</b> versus <b>log(ppgdp)</b>
+</p>
+
+
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">log</span><span class="hl std">(fertility)</span> <span class="hl opt">~</span> <span class="hl kwd">log</span><span class="hl std">(ppgdp), UN11)</span>
+        <span class="hl std">m3</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">lm</span><span class="hl std">(</span><span class="hl kwd">log</span><span class="hl std">(fertility)</span> <span class="hl opt">~</span> <span class="hl kwd">log</span><span class="hl std">(ppgdp),</span> <span class="hl kwc">data</span><span class="hl std">=UN11)</span>
+        <span class="hl kwd">abline</span><span class="hl std">(m3)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
+
+<b>With this transformation, we can see that our model has improved</b>
+
+</body>
+</html>

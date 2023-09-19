@@ -1,0 +1,36 @@
+<html>
+
+<head>
+<title>Title</title>
+</head>
+
+<body>
+
+<b>The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries.</b>
+
+<p> 
+First, we will study the dependence of fertility on ppgdp with a scatterplot
+</p>
+
+<!--begin.rcode
+library(alr4)
+plot(fertility ~ ppgdp, UN11, main = "fertility on ppgdp")
+m0 <- lm(fertility ~ ppgdp, data=UN11) 
+	    abline(m0)
+
+end.rcode-->
+
+<p> As we can see, the model doesn't fit very well, so we will draw the scatterplot of  <b>log(fertility)</b> versus <b>log(ppgdp)</b>
+</p>
+
+
+<!--begin.rcode
+plot(log(fertility) ~ log(ppgdp), UN11)
+	m3 <- lm(log(fertility) ~ log(ppgdp), data=UN11) 
+	abline(m3)
+end.rcode-->
+
+<b>With this transformation, we can see that our model has improved</b>
+
+</body>
+</html>
