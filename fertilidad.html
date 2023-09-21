@@ -63,12 +63,16 @@
   font-weight: bold;
 }
 </style>
-<title>Title</title>
+<meta name="author" content="Anahí Zárate" />
+<meta
+  name="description"
+  content="The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries." />
+
 </head>
 
 <body>
 
-<b>The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries.</b>
+
 
 <p> 
 First, we will study the dependence of fertility on ppgdp with a scatterplot
@@ -101,7 +105,133 @@ First, we will study the dependence of fertility on ppgdp with a scatterplot
 </pre></div>
 </div><div class="rimage default"><img src="figure/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
 
-<b>With this transformation, we can see that our model has improved</b>
+<p>With this transformation, we can see that our model has improved.
+The model for this data is given for:
+</p>
 
-</body>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(m3)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:
+## lm(formula = log(fertility) ~ log(ppgdp), data = UN11)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.79828 -0.21639  0.02669  0.23424  0.95596 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  2.66551    0.12057   22.11   &lt;2e-16 ***
+## log(ppgdp)  -0.20715    0.01401  -14.79   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.3071 on 197 degrees of freedom
+## Multiple R-squared:  0.526,	Adjusted R-squared:  0.5236 
+## F-statistic: 218.6 on 1 and 197 DF,  p-value: &lt; 2.2e-16
+</pre></div>
+</div></div>
+
+<p>
+Test the hypothesis that the slope is 0 versus the alternative that 
+it is negative with an a = 0.01. We can see at the summary that the slope is statistically different from 0. </p>
+
+<p> Well, now for a locality not in the data with ppgdp = 1000, we will get a point 
+prediction and a 95% prediction interval for log(fertility). </p>
+
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">predvals</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">predict</span><span class="hl std">(m3,</span> <span class="hl kwc">newdata</span><span class="hl std">=</span><span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwc">ppgdp</span> <span class="hl std">=</span> <span class="hl num">1000</span><span class="hl std">),</span>
+<span class="hl kwc">se.fit</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">predict</span><span class="hl std">(m3,</span> <span class="hl kwc">newdata</span><span class="hl std">=</span><span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwc">ppgdp</span> <span class="hl std">=</span> <span class="hl num">1000</span><span class="hl std">),</span>
+<span class="hl kwc">interval</span><span class="hl std">=</span><span class="hl str">&quot;prediction&quot;</span><span class="hl std">,</span> <span class="hl kwc">level</span><span class="hl std">=</span><span class="hl num">.95</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##        fit       lwr      upr
+## 1 1.234567 0.6258791 1.843256
+</pre></div>
+</div></div>
+
+<p>The next step will be Identify the locality with the highest value of fertility;
+the locality with the lowest value of fertility; and the two 
+localities with the largest positive residuals from the regression 
+when both variables are in log scale, and the two countries with 
+the largest negative residuals in log scales.</p>
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">subset</span><span class="hl std">(UN11,UN11</span><span class="hl opt">$</span><span class="hl std">fertility</span><span class="hl opt">==</span><span class="hl kwd">max</span><span class="hl std">(UN11</span><span class="hl opt">$</span><span class="hl std">fertility))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##       region  group fertility ppgdp lifeExpF pctUrban
+## Niger Africa africa     6.925 357.7    55.77       17
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">subset</span><span class="hl std">(UN11,UN11</span><span class="hl opt">$</span><span class="hl std">fertility</span><span class="hl opt">==</span><span class="hl kwd">min</span><span class="hl std">(UN11</span><span class="hl opt">$</span><span class="hl std">fertility))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##                        region group fertility  ppgdp lifeExpF pctUrban
+## Bosnia and Herzegovina Europe other     1.134 4477.7     78.4       49
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">r</span><span class="hl kwb">=</span><span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwd">residuals</span><span class="hl std">(m3))</span>
+<span class="hl com">#positives</span>
+<span class="hl std">res_ord</span> <span class="hl kwb">&lt;-</span> <span class="hl std">r[</span><span class="hl kwd">order</span><span class="hl std">(r[,</span><span class="hl num">1</span><span class="hl std">],</span> <span class="hl kwc">decreasing</span> <span class="hl std">= T),]</span>
+<span class="hl std">res_ord[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">2</span><span class="hl std">]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.9559557 0.7047167
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#negatives</span>
+<span class="hl std">res_ord[</span><span class="hl num">199</span><span class="hl opt">:</span><span class="hl num">198</span><span class="hl std">]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] -0.7982759 -0.7623290
+</pre></div>
+</div></div>
+
+
+
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">scatterplotMatrix</span><span class="hl std">(</span><span class="hl opt">~</span><span class="hl std">fertility</span><span class="hl opt">+</span><span class="hl kwd">log</span><span class="hl std">(ppgdp)</span><span class="hl opt">+</span><span class="hl std">pctUrban,</span><span class="hl kwc">data</span> <span class="hl std">= UN11)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">pairs</span><span class="hl std">(</span><span class="hl opt">~</span><span class="hl std">fertility</span><span class="hl opt">+</span><span class="hl kwd">log</span><span class="hl std">(ppgdp)</span><span class="hl opt">+</span><span class="hl std">pctUrban,</span> <span class="hl kwc">data</span> <span class="hl std">= UN11)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-6-2.png" alt="plot of chunk unnamed-chunk-6" class="plot" /></div></div>
+
+<p>
+As we can see, the regression model explains at least 55.6% of the variability of log (fertility), the regression model explains at least 55.6% of the variability of log (fertility), so we will then add a predictor variable <b>lifeExpF</b>:
+</p>
+
+
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">scatterplotMatrix</span><span class="hl std">(</span><span class="hl opt">~</span><span class="hl kwd">log</span><span class="hl std">(fertility)</span><span class="hl opt">+</span><span class="hl kwd">log</span><span class="hl std">(ppgdp)</span><span class="hl opt">+</span><span class="hl std">lifeExpF,</span><span class="hl kwc">data</span> <span class="hl std">= UN11)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">pairs</span><span class="hl std">(</span><span class="hl opt">~</span><span class="hl kwd">log</span><span class="hl std">(fertility)</span><span class="hl opt">+</span><span class="hl kwd">log</span><span class="hl std">(ppgdp)</span><span class="hl opt">+</span><span class="hl std">lifeExpF,</span> <span class="hl kwc">data</span> <span class="hl std">= UN11)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7-2.png" alt="plot of chunk unnamed-chunk-7" class="plot" /></div></div>
+
+<p>The linear regression model will be fitted</>
+
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">m1</span><span class="hl kwb">&lt;-</span><span class="hl kwd">lm</span><span class="hl std">(</span><span class="hl kwd">log</span><span class="hl std">(fertility)</span><span class="hl opt">~</span><span class="hl kwd">log</span><span class="hl std">(ppgdp)</span><span class="hl opt">+</span><span class="hl std">lifeExpF,</span><span class="hl kwc">data</span><span class="hl std">=UN11)</span>
+<span class="hl kwd">avPlots</span><span class="hl std">(m1)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(m1)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:
+## lm(formula = log(fertility) ~ log(ppgdp) + lifeExpF, data = UN11)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.61778 -0.16891  0.03731  0.17591  0.61072 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  3.50736    0.12707  27.601  &lt; 2e-16 ***
+## log(ppgdp)  -0.06544    0.01781  -3.675 0.000307 ***
+## lifeExpF    -0.02824    0.00274 -10.306  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.248 on 196 degrees of freedom
+## Multiple R-squared:  0.6926,	Adjusted R-squared:  0.6894 
+## F-statistic: 220.8 on 2 and 196 DF,  p-value: &lt; 2.2e-16
+</pre></div>
+</div></div>
+
+<p>A 25% increase in ppgdp is associated with a 1.4% decrease in expected fertility, since exp(log(1.25) × (−0.065)) ≈ 0.986 and 100%(0.986 − 1) = 1.4%.</p>
+
+<p>With this new variable added, the regression model explains at least 68.9% of the variability of log(fertility).</p>
 </html>

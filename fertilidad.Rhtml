@@ -1,12 +1,16 @@
 <html>
 
 <head>
-<title>Title</title>
+<meta name="author" content="Anahí Zárate" />
+<meta
+  name="description"
+  content="The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries." />
+
 </head>
 
 <body>
 
-<b>The data in the file UN11 (National health, welfare, and education statistics) for 210 places, mostly UN members, but also otherareas like Hong Kong that are not independent countries.</b>
+
 
 <p> 
 First, we will study the dependence of fertility on ppgdp with a scatterplot
@@ -30,7 +34,72 @@ plot(log(fertility) ~ log(ppgdp), UN11)
 	abline(m3)
 end.rcode-->
 
-<b>With this transformation, we can see that our model has improved</b>
+<p>With this transformation, we can see that our model has improved.
+The model for this data is given for:
+</p>
 
-</body>
+<!--begin.rcode
+summary(m3)
+end.rcode-->
+
+<p>
+Test the hypothesis that the slope is 0 versus the alternative that 
+it is negative with an a = 0.01. We can see at the summary that the slope is statistically different from 0. </p>
+
+<p> Well, now for a locality not in the data with ppgdp = 1000, we will get a point 
+prediction and a 95% prediction interval for log(fertility). </p>
+
+<!--begin.rcode
+predvals <- predict(m3, newdata=data.frame(ppgdp = 1000),
+se.fit=TRUE)
+predict(m3, newdata=data.frame(ppgdp = 1000),
+interval="prediction", level=.95)
+end.rcode-->
+
+<p>The next step will be Identify the locality with the highest value of fertility;
+the locality with the lowest value of fertility; and the two 
+localities with the largest positive residuals from the regression 
+when both variables are in log scale, and the two countries with 
+the largest negative residuals in log scales.</p>
+
+<!--begin.rcode
+subset(UN11,UN11$fertility==max(UN11$fertility))
+subset(UN11,UN11$fertility==min(UN11$fertility))
+r=data.frame(residuals(m3))
+#positives
+res_ord <- r[order(r[,1], decreasing = T),]
+res_ord[1:2]
+#negatives
+res_ord[199:198]
+end.rcode-->
+
+
+
+
+<!--begin.rcode
+scatterplotMatrix(~fertility+log(ppgdp)+pctUrban,data = UN11)
+pairs(~fertility+log(ppgdp)+pctUrban, data = UN11)
+end.rcode-->
+
+<p>
+As we can see, the regression model explains at least 55.6% of the variability of log (fertility), the regression model explains at least 55.6% of the variability of log (fertility), so we will then add a predictor variable <b>lifeExpF</b>:
+</p>
+
+
+<!--begin.rcode
+scatterplotMatrix(~log(fertility)+log(ppgdp)+lifeExpF,data = UN11)
+pairs(~log(fertility)+log(ppgdp)+lifeExpF, data = UN11)
+end.rcode-->
+
+<p>The linear regression model will be fitted</>
+
+<!--begin.rcode
+m1<-lm(log(fertility)~log(ppgdp)+lifeExpF,data=UN11)
+avPlots(m1)
+summary(m1)
+end.rcode-->
+
+<p>A 25% increase in ppgdp is associated with a 1.4% decrease in expected fertility, since exp(log(1.25) × (−0.065)) ≈ 0.986 and 100%(0.986 − 1) = 1.4%.</p>
+
+<p>With this new variable added, the regression model explains at least 68.9% of the variability of log(fertility).</p>
 </html>
